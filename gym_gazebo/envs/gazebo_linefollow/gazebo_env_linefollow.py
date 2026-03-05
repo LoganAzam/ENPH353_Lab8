@@ -100,6 +100,9 @@ class Gazebo_Linefollow_Env(gazebo_env.GazeboEnv):
 			if self.timeout > 1:
 				done = True
 
+		cv2.imshow("raw", cv_image)	
+		cv2.waitKey(1)
+
 		cv2.imshow("threshold", thresh)	
 		cv2.waitKey(1)
 
