@@ -91,7 +91,7 @@ class Gazebo_Linefollow_Env(gazebo_env.GazeboEnv):
  
 		total_pixels = sum(bins)
 		
-		if total_pixels > 5000:
+		if total_pixels > 3000:
 			self.timeout = 0
 			max_index = bins.index(max(bins))
 			state[max_index] = 1
@@ -100,9 +100,16 @@ class Gazebo_Linefollow_Env(gazebo_env.GazeboEnv):
 			if self.timeout > 1:
 				done = True
 
-		cv2.imshow("raw", cv_image)	
-		cv2.waitKey(1)
+		state_text = f"State: {state}"
+		# Parameters: (image, text, position, font, scale, color, thickness)
+		cv2.putText(cv_image, state_text, (20, 40), 
+					cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+		
+		# Draw vertical lines to show the bin boundaries
+		cv2.line(cv_image, (width//3, 0), (width//3, height), (255, 0, 0), 1)
+		cv2.line(cv_image, (2*width//3, 0), (2*width//3, height), (255, 0, 0), 1)
 
+		cv2.imshow("raw", cv_image)	
 		cv2.imshow("threshold", thresh)	
 		cv2.waitKey(1)
 
