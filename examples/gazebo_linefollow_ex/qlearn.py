@@ -16,9 +16,8 @@ class QLearn:
         '''
         Load the Q state-action values from a pickle file.
         '''
-        
-        # TODO: Implement loading Q values from pickle file.
 
+        # Check if the file exists
         path = filename + ".pickle"
         if os.path.exists(path):
             with open(path, "rb") as f:
@@ -32,7 +31,6 @@ class QLearn:
         '''
         Save the Q state-action values in a pickle file.
         '''
-        # TODO: Implement saving Q values to pickle and CSV files.
 
         with open(filename + ".pickle", "wb") as f:
             pickle.dump(self.q, f)
@@ -56,21 +54,8 @@ class QLearn:
         @brief returns a random action epsilon % of the time or the action 
             associated with the largest Q value in (1-epsilon)% of the time
         '''
-        # TODO: Implement exploration vs exploitation
-        #    if we need to take a random action:
-        #       * return a random action
-        #    else:
-        #       * determine which action has the highest Q value for the state 
-        #          we are in.
-        #       * address edge cases - what if 2 actions have the same max Q 
-        #          value?
-        #       * return the action with highest Q value
-        #
-        # NOTE: if return_q is set to True return (action, q) instead of
-        #       just action
 
-        # THE NEXT LINES NEED TO BE MODIFIED TO MATCH THE REQUIREMENTS ABOVE 
-
+        # Choose a random action with probability epsilon
         if random.random() < self.epsilon:
             action = random.choice(self.actions)
         else:
@@ -89,22 +74,12 @@ class QLearn:
         @brief updates the Q(state,value) dictionary using the bellman update
             equation
         '''
-        # TODO: Implement the Bellman update function:
-        #     Q(s1, a1) += alpha * [reward(s1,a1) + gamma* max(Q(s2)) - Q(s1,a1)]
-        # 
-        # NOTE: address edge cases: i.e. 
-        # 
+
         # Find Q for current (state1, action1)
-        # Address edge cases what do we want to do if the [state, action]
-        #       is not in our dictionary?
-        # Find max(Q) for state2
-        # Update Q for (state1, action1) (use discount factor gamma for future 
-        #   rewards)
-
-        # THE NEXT LINES NEED TO BE MODIFIED TO MATCH THE REQUIREMENTS ABOVE
-
         old_q = self.getQ(state1, action1)
 
+        # Find max Q for state2
         max_q = max([self.getQ(state2, a) for a in self.actions], default=0.0)
 
+        # Update Q for (state1, action1)
         self.q[(state1, action1)] = old_q + self.alpha * (reward + self.gamma * max_q - old_q)

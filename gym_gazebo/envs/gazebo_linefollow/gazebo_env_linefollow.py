@@ -55,26 +55,12 @@ class Gazebo_Linefollow_Env(gazebo_env.GazeboEnv):
 
 		# cv2.imshow("raw", cv_image)
 
+		# Analyze the cv_image and compute the state array and episode termination condition.
 		NUM_BINS = 3
 		state = [0, 0, 0]
 		done = False
 
-		# TODO: Analyze the cv_image and compute the state array and
-		# episode termination condition.
-		#
-		# The state array is a list of 3 elements indicating where in the
-		# image the line is:
-		# i.e.
-		#    [1, 0, 0] indicates line is on the left
-		#    [0, 1, 0] indicates line is in the center
-		#
-		# The episode termination condition should be triggered when the line
-		# is not detected for more than 1 frame. In this case set the done
-		# variable to True.
-		#
-		# You can use the self.timeout variable to keep track of which frames
-		# have no line detected.
-
+		# Convert to grayscale and apply threshold to isolate the line
 		gray = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
 		_, thresh = cv2.threshold(gray, 140, 255, cv2.THRESH_BINARY_INV)
 
@@ -83,6 +69,7 @@ class Gazebo_Linefollow_Env(gazebo_env.GazeboEnv):
 		roi_end_row = int(height * 0.95)
 		roi = thresh[roi_start_row:roi_end_row, :]
 
+		# Compute the histogram of the region of interest (ROI)
 		bin_width = width // NUM_BINS
 		bins = []
 		for i in range(NUM_BINS):
@@ -90,7 +77,8 @@ class Gazebo_Linefollow_Env(gazebo_env.GazeboEnv):
 			bins.append(np.sum(bin_data))
  
 		total_pixels = sum(bins)
-		
+
+		# Determine if the line is detected
 		if total_pixels > 3000:
 			self.timeout = 0
 			max_index = bins.index(max(bins))
