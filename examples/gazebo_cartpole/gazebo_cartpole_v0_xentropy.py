@@ -202,8 +202,8 @@ def filter_batch(batch, percentile):
 if __name__ == '__main__':
     # Setup environment
     env = gym.make('GazeboCartPole-v0')
-    obs_size = 4#TODO: Set observation size space
-    n_actions = 2#TODO: Set action size space
+    obs_size = 4 # x, xdot, theta, thetadot
+    n_actions = 2 # left, right
 
     # Create the NN object
     net = Net(obs_size, HIDDEN_SIZE, n_actions)
@@ -218,26 +218,23 @@ if __name__ == '__main__':
     # episodes in the top 30% and we train our NN on them.
     for iter_no, batch in enumerate(iterate_batches(env, net, BATCH_SIZE)):
         # Identify the episodes that are in the top PERCENTILE of the batch
-        obs_v, acts_v, reward_b, reward_m = filter_batch(batch, percentile=30) #TODO identify the episode in top PERCENTILE
+        obs_v, acts_v, reward_b, reward_m = filter_batch(batch, PERCENTILE) # Identify the episode in top PERCENTILE
 
         # Prepare for training the NN by zeroing the acumulated gradients.
-        # TODO: zero gradients
         optimizer.zero_grad()
 
         # Calculate the predicted probabilities for each action in the best 
         # episodes
-        action_scores_v = net(obs_v) #TODO forward pass on each observation
+        action_scores_v = net(obs_v) #Forward pass
 
         # Calculate the cross entropy loss between the predicted actions and 
         # the actual actions
-        loss_v = objective(action_scores_v, acts_v) #TODO calculate loss
+        loss_v = objective(action_scores_v, acts_v) #Calculate loss
 
         # Train the NN: calculate the gradients using and then adjust the 
         # weights based on the gradients
-        #TODO backward pass
-        loss_v.backward()
-        #TODO adjust gradients
-        optimizer.step()
+        loss_v.backward() # Backward pass
+        optimizer.step() # Update weights
 
         # Display summary of current batch
         print("%d: loss=%.3f, reward_mean=%.1f, reward_bound=%.1f" % (
